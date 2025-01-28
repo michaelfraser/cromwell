@@ -30,3 +30,6 @@ database: ## Create a bash session in the database container
 
 logs-web: ## Display webserver logs
 	docker logs cromwell-webserver-1
+
+test-integration: ## Run integration tests from the host machine
+	npx jest tests/integration

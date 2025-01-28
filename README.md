@@ -4,6 +4,10 @@
 - [Docker](https://www.docker.com) tested on 27.4.0
 - [Curl](https://curl.se/docs/manpage.html)
 
+These are only needed on your machine if you want to run the integeration tests for the APIs.
+- [Npm](https://www.npmjs.com) tested on 10.8.2
+- [Node](https://nodejs.org/en) tested with v18.20.6
+
 ## Getting started
 
 To ease the setup for the project.  The APIs will run in Node and Mongo docker containers
@@ -19,6 +23,7 @@ nuke                           Delete all docker containers and rebuild
 bash                           Create a bash session in the webserver container
 database                       Create a bash session in the database container
 logs-web                       Display webserver logs
+test-integration               Run integration tests from the host machine
 ```
 
 ## Run development environment
@@ -57,6 +62,12 @@ You should receive a json response similar to the below:
   }
 }
 ```
+
+##  Integration tests
+
+There are a number of integation tests of the APIs in the `tests/integration` folder which can be run with:
+
+`make test-integration`
 
 ---
 Please review this document as we progress through the project and make sure that instructions are still valid.
