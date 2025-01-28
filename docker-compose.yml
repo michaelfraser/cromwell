@@ -1,0 +1,15 @@
+services:
+
+  database:
+    image: mongo
+    ports:
+      - "27017:27017"
+    
+  webserver:
+    build: .
+    volumes:
+      - './:/usr/src/app:cached'
+    ports:
+      - "${DOCKER_EXTERNAL_PORT}:${DOCKER_INTERNAL_PORT}"
+    depends_on:
+      - database
