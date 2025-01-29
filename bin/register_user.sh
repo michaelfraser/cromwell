@@ -1,7 +1,8 @@
 #!/bin/bash
 
+source ../.env
 # Define variables
-URL="http://localhost:9001/user/register"
+URL="http://localhost:{$DOCKER_EXTERNAL_PORT}//user/register"
 DATA='{
   "name": "John Doe",
   "email": "john.doe@test.com",

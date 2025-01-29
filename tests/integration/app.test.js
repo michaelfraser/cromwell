@@ -1,5 +1,22 @@
 import fetch from 'node-fetch';
 import { MongoClient } from "mongodb";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const BASE_URL = `http://localhost:${process.env.DOCKER_EXTERNAL_PORT}`;
+
+function buildUrl(path, queryParams = {}) {
+  const url = new URL(path, BASE_URL);
+  
+  Object.keys(queryParams).forEach(key => {
+      if (queryParams[key] !== undefined && queryParams[key] !== null) {
+          url.searchParams.append(key, queryParams[key]);
+      }
+  });
+  
+  return url.toString();
+}
 
 let db;
 let client;
@@ -19,7 +36,7 @@ afterAll(async () => {
 describe('Health API', () => {
   it('should return a 200 status and a valid response body', async () => {
     
-    const url = 'http://localhost:9001/health';
+    const url = BASE_URL + '/health';
 
     const response = await fetch(url);
 
@@ -54,7 +71,8 @@ test("should clear the users collection and ensure it is empty", async () => {
 describe('Register API', () => {
 
   it('should successfully register a user and return the appropriate response', async () => {
-    const url = 'http://localhost:9001/user/register';
+    
+    const url = buildUrl('/user/register');
 
     const payload = {
       name: 'John Doe',
@@ -90,7 +108,8 @@ describe('Register API', () => {
   });
 
   it('should fail register a user and return the appropriate response', async () => {
-    const url = 'http://localhost:9001/user/register';
+    
+    const url = buildUrl('/user/register');
 
     const payload = {
       name: 'John Doe',
@@ -122,7 +141,7 @@ describe('Register API', () => {
 describe('Login API', () => {
 
   it('should successfully log in a user and return a valid response', async () => {
-    const url = 'http://localhost:9001/user/login';
+    const url = buildUrl('/user/login');
 
     const payload = {
       email: 'jd@test.com',
@@ -149,7 +168,7 @@ describe('Login API', () => {
   });
 
   it('should login with an invalid user and return an error response', async () => {
-    const url = 'http://localhost:9001/user/login';
+    const url = buildUrl('/user/login');
 
     const payload = {
       email: 'uknown@user.com',
@@ -179,7 +198,7 @@ describe('Login API', () => {
 
 describe('User API', () => {
   it('should not find a user', async () => {
-    const url = 'http://localhost:9001/user/6799e630d1fbe49663807ed3';
+    const url = buildUrl('/user/6799e630d1fbe49663807ed3');
   
     try {
       const response = await fetch(url, {

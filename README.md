@@ -69,6 +69,18 @@ There are a number of integation tests of the APIs in the `tests/integration` fo
 
 `make test-integration`
 
+##  APIs
+
+This application contains the following APIs:
+
+[GET]
+/health
+/user/:id
+
+[POST]
+/user/register
+/user/login
+
 ---
 Please review this document as we progress through the project and make sure that instructions are still valid.
-Last reviewed by Michael Fraser on 28/01/2025
+Last reviewed by Michael Fraser on 29/01/2025
