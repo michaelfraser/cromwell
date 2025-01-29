@@ -1,4 +1,5 @@
 import { registerService, loginService } from '../services/authService.js';
+import { getUserService } from '../services/userService.js';
 
 export async function register(req, res) {
   try {
@@ -33,5 +34,23 @@ export async function login(req, res) {
     res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
     res.status(401).json({ error: 'Login failed', details: error.message });
+  }
+}
+
+export async function user(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const user = await getUserService(id);
+
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    res.status(200).json({ message: 'User retrieved successfully', name: user.name });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve user', details: error.message });
   }
 }

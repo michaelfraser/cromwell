@@ -175,4 +175,34 @@ describe('Login API', () => {
     );
   });    
   
-});  
+});
+
+describe('User API', () => {
+  it('should not find a user', async () => {
+    const url = 'http://localhost:9001/user/6799e630d1fbe49663807ed3';
+  
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+  
+      expect(response.status).toBe(404);
+  
+      const contentType = response.headers.get('content-type');
+      expect(contentType).toContain('application/json');
+  
+      const data = await response.json();
+  
+      expect(data).toEqual(
+        expect.objectContaining({
+          error: 'User not found',
+        })
+      );
+    } catch (error) {
+      throw new Error(`Fetch request failed: ${error.message}`);
+    }
+  });
+});
