@@ -36,7 +36,7 @@ afterAll(async () => {
 describe('Health API', () => {
   it('should return a 200 status and a valid response body', async () => {
     
-    const url = BASE_URL + '/health';
+    const url = buildUrl('/health');
 
     const response = await fetch(url);
 
