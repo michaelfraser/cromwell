@@ -1,11 +1,29 @@
 import { hash, compare } from 'bcrypt';
 import pkg from 'jsonwebtoken';
+import Joi from 'joi';
 import User from '../models/userModel.js';
 
 const { sign } = pkg;
 
+const passwordSchema = Joi.object({
+  password: Joi.string()
+    .min(8).message('Password must be at least 8 characters long')
+    .pattern(/[A-Z]/).message('Password must contain at least one uppercase letter')
+    .pattern(/[a-z]/).message('Password must contain at least one lowercase letter')
+    .pattern(/[0-9]/).message('Password must contain at least one number')
+    .pattern(/[^a-zA-Z0-9]/).message('Password must contain at least one special character')
+    .required(),
+});
+
 // Register a new user
 export async function registerService(email, password, name) {
+
+  const { error } = passwordSchema.validate({ password }, { abortEarly: false });
+  if (error) {
+    const messages = error.details.map(detail => detail.message);
+    throw new Error(`Invalid password:\n- ${messages.join('\n- ')}`);
+  }
+
   // Check if the user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -14,14 +32,13 @@ export async function registerService(email, password, name) {
 
   const hashedPassword = await hash(password, 10);
 
-  // Create a new user
-  const newUser = new User({
+  const newUser = await User.create({
     email,
     password: hashedPassword,
     name,
   });
 
-  return await newUser.save();
+  return newUser;
 }
 
 // Authenticate a user and generate a JWT token
