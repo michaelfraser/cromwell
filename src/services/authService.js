@@ -5,6 +5,11 @@ import User from '../models/userModel.js';
 
 const { sign } = pkg;
 
+const emailSchema = Joi.string()
+  .email({ tlds: { allow: false } })
+  .message('Invalid email format')
+  .required();
+
 const passwordSchema = Joi.object({
   password: Joi.string()
     .min(8).message('Password must be at least 8 characters long')
@@ -17,10 +22,14 @@ const passwordSchema = Joi.object({
 
 // Register a new user
 export async function registerService(email, password, name) {
+  const { error: emailError } = emailSchema.validate(email);
+  if (emailError) {
+    throw new Error(emailError.message);
+  }
 
-  const { error } = passwordSchema.validate({ password }, { abortEarly: false });
-  if (error) {
-    const messages = error.details.map(detail => detail.message);
+  const { error: passwordError } = passwordSchema.validate({ password }, { abortEarly: false });
+  if (passwordError) {
+    const messages = passwordError.details.map(detail => detail.message);
     throw new Error(`Invalid password:\n- ${messages.join('\n- ')}`);
   }
 
