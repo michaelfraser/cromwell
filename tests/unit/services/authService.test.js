@@ -1,4 +1,3 @@
-
 import { hash, compare } from 'bcrypt';
 import pkg from 'jsonwebtoken';
 import Joi from 'joi';
@@ -26,6 +25,11 @@ describe('AuthService', () => {
   });
 
   describe('registerService', () => {
+    it('should throw an error if the email is invalid', async () => {
+      await expect(registerService('invalid-email', 'Valid@123', 'John Doe'))
+        .rejects.toThrow('Invalid email format');
+    });
+
     it('should throw an error if the password is invalid', async () => {
       const invalidPassword = 'short';
       await expect(registerService('test@example.com', invalidPassword, 'John Doe'))
@@ -62,7 +66,6 @@ describe('AuthService', () => {
         password: 'hashedPassword',
         name: 'John Doe',
       });
-
     });
   });
 

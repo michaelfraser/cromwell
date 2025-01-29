@@ -30,6 +30,7 @@ bash                           Create a bash session in the webserver container
 database                       Create a bash session in the database container
 logs-web                       Display webserver logs
 test-integration               Run integration tests from the host machine
+test-unit                      Run unit tests from the host machine
 ```
 
 ## Run development environment
@@ -90,6 +91,12 @@ This application contains the following APIs:
 
 - /user/register
 - /user/login
+
+## Unit tests
+
+There are a number of unit tests of the APIs in the `tests/unit` folder which can be run with:
+
+`make test-unit`
 
 ---
 Please review this document as we progress through the project and make sure that instructions are still valid.
