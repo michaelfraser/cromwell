@@ -18,7 +18,7 @@ app.use(json());
 // Configure CORS
 app.use(cors({
   origin: 'http://localhost:' + uiPort,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true // If using cookies/auth
 }));
 
