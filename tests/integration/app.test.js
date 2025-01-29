@@ -77,7 +77,7 @@ describe('Register API', () => {
     const payload = {
       name: 'John Doe',
       email: 'jd@test.com',
-      password: 'jd',
+      password: 'JohnD0e!',
     };
 
     const response = await fetch(url, {
@@ -114,7 +114,7 @@ describe('Register API', () => {
     const payload = {
       name: 'John Doe',
       email: 'jd@test.com',
-      password: 'jd',
+      password: 'JohnD0e!',
     };
 
     const response = await fetch(url, {
@@ -145,7 +145,7 @@ describe('Login API', () => {
 
     const payload = {
       email: 'jd@test.com',
-      password: 'jd',
+      password: 'JohnD0e!',
     };
 
     const response = await fetch(url, {

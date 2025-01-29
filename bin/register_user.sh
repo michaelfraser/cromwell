@@ -2,11 +2,11 @@
 
 source ../.env
 # Define variables
-URL="http://localhost:{$DOCKER_EXTERNAL_PORT}//user/register"
+URL="http://localhost:{$DOCKER_EXTERNAL_PORT}/user/register"
 DATA='{
   "name": "John Doe",
   "email": "john.doe@test.com",
-  "password": "test"
+  "password": "J0hnDoe!"
 }'
 
 # Make the curl request
