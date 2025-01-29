@@ -29,7 +29,10 @@ database: ## Create a bash session in the database container
 	docker compose exec database bash
 
 logs-web: ## Display webserver logs
-	docker logs cromwell-webserver-1
+	docker compose logs webserver
 
 test-integration: ## Run integration tests from the host machine
 	npx jest tests/integration
+
+test-unit: ## Run unit tests from the host machine
+	npx jest tests/unit
