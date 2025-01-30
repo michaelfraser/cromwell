@@ -1,7 +1,5 @@
 import { hash, compare } from 'bcrypt';
 import pkg from 'jsonwebtoken';
-import Joi from 'joi';
-
 import { registerService, loginService } from '../../../src/services/authService.js';
 import User from '../../../src/models/userModel.js';
 
@@ -22,6 +20,7 @@ jest.mock('../../../src/models/userModel.js', () => ({
 describe('AuthService', () => {
   afterEach(() => {
     jest.clearAllMocks();
+    jest.resetModules(); // Reset modules to clear any cached environment variables
   });
 
   describe('registerService', () => {
@@ -66,6 +65,23 @@ describe('AuthService', () => {
         password: 'hashedPassword',
         name: 'John Doe',
       });
+    });
+
+    it('should handle errors during password hashing', async () => {
+      User.findOne.mockResolvedValue(null);
+      hash.mockRejectedValue(new Error('Hashing failed'));
+
+      await expect(registerService('test@example.com', 'Valid@123', 'John Doe'))
+        .rejects.toThrow('Hashing failed');
+    });
+
+    it('should handle database errors during user creation', async () => {
+      User.findOne.mockResolvedValue(null);
+      hash.mockResolvedValue('hashedPassword');
+      User.create.mockRejectedValue(new Error('Database error'));
+
+      await expect(registerService('test@example.com', 'Valid@123', 'John Doe'))
+        .rejects.toThrow('Database error');
     });
   });
 
@@ -112,6 +128,42 @@ describe('AuthService', () => {
         { expiresIn: '1h' }
       );
       expect(token).toBe('mockToken');
+    });
+
+    it('should handle errors during password comparison', async () => {
+      const mockUser = {
+        _id: '123456',
+        email: 'test@example.com',
+        password: 'hashedPassword',
+      };
+
+      User.findOne.mockResolvedValue(mockUser);
+      compare.mockRejectedValue(new Error('Comparison failed'));
+
+      await expect(loginService('test@example.com', 'Valid@123'))
+        .rejects.toThrow('Comparison failed');
+    });
+
+    it('should handle missing JWT_SECRET', async () => {
+      const mockUser = {
+        _id: '123456',
+        email: 'test@example.com',
+        password: 'hashedPassword',
+      };
+
+      User.findOne.mockResolvedValue(mockUser);
+      compare.mockResolvedValue(true);
+
+      // Ensure JWT_SECRET is deleted
+      delete process.env.JWT_SECRET;
+
+      // Mock jsonwebtoken.sign to throw an error when JWT_SECRET is missing
+      pkg.sign.mockImplementation(() => {
+        throw new Error('JWT_SECRET is not defined');
+      });
+
+      await expect(loginService('test@example.com', 'Valid@123'))
+        .rejects.toThrow('JWT_SECRET is not defined');
     });
   });
 });

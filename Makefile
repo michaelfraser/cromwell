@@ -36,3 +36,6 @@ test-integration: ## Run integration tests from the host machine
 
 test-unit: ## Run unit tests from the host machine
 	npx jest tests/unit
+
+lint: ## Run eslint from the host machine
+	npx eslint .
